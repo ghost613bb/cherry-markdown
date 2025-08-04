@@ -88,7 +88,29 @@ export default class EChartsTableEngine {
     const eChartInstance = this.getInstance();
     eChartInstance.clear();
     eChartInstance.setOption(chartOption);
-    return eChartInstance.getDom().innerHTML;
+    const chartId = `cherry-chart-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const chartHtml = `<div id="${chartId}" style="width: ${this.options.width}px; height: ${this.options.height}px;"></div>`;
+    this.pendingCharts = this.pendingCharts || new Map();
+    this.pendingCharts.set(chartId, { type, options, tableObject, chartOption });
+    setTimeout(() => {
+      this.initPendingChart(chartId);
+    }, 100);
+    return chartHtml;
+  }
+
+  initPendingChart(chartId) {
+    const chartElement = document.getElementById(chartId);
+    if (!chartElement || !this.pendingCharts.has(chartId)) {
+      return;
+    }
+    const { chartOption } = this.pendingCharts.get(chartId);
+    const chartInstance = this.echartsRef.init(chartElement, null, {
+      renderer: this.options.renderer,
+      width: this.options.width,
+      height: this.options.height,
+    });
+    chartInstance.setOption(chartOption);
+    this.pendingCharts.delete(chartId);
   }
 
   renderBarChart(tableObject, options) {
@@ -141,6 +163,30 @@ export default class EChartsTableEngine {
     );
     const chartOptions = {
       ...dataSet,
+      // 添加鼠标悬浮提示
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          label: {
+            backgroundColor: '#6a7985',
+          },
+        },
+        backgroundColor: 'rgba(50, 50, 50, 0.9)',
+        borderColor: '#777',
+        borderWidth: 1,
+        textStyle: {
+          color: '#fff',
+        },
+        formatter(params) {
+          let result = `${params[0].name} + <br/>`;
+          params.forEach(function (item) {
+            result += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color: ${item.color} ;"></span>`;
+            result += `${item.seriesName}: ${item.value}<br/>`;
+          });
+          return result;
+        },
+      },
       xAxis: {
         data: tableObject.header.slice(1),
         type: 'category',
