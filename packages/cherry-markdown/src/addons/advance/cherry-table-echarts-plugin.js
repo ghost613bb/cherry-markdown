@@ -187,6 +187,73 @@ export default class EChartsTableEngine {
           return result;
         },
       },
+      // 添加图例筛选功能
+      legend: {
+        ...dataSet.legend,
+        type: 'scroll',
+        orient: 'horizontal',
+        left: 'center',
+        top: 'top',
+        selected: dataSet.legend.data.reduce((acc, name) => {
+          acc[name] = true;
+          return acc;
+        }, {}),
+        selector: [
+          {
+            type: 'all',
+            title: '全选',
+          },
+          {
+            type: 'inverse',
+            title: '反选',
+          },
+        ],
+        selectorLabel: {
+          show: true,
+          borderRadius: 5,
+          padding: [2, 5, 2, 5],
+          fontSize: 12,
+          fontFamily: 'Microsoft YaHei',
+          color: '#666',
+          borderWidth: 1,
+          borderColor: '#ccc',
+        },
+      },
+      // 添加数据缩放筛选功能
+      dataZoom: [
+        {
+          type: 'slider',
+          show: true,
+          xAxisIndex: [0],
+          start: 0,
+          end: 100,
+          bottom: '5%',
+          height: 20,
+          handleIcon: `
+            M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z
+            M13.3,24.4H6.7V23.1h6.6V24.4z
+            M13.3,19.6H6.7v-1.4h6.6V19.6z
+          `.replace(/\n\s+/g, ''),
+          handleSize: '80%',
+          handleStyle: {
+            color: '#fff',
+            shadowBlur: 3,
+            shadowColor: 'rgba(0, 0, 0, 0.6)',
+            shadowOffsetX: 2,
+            shadowOffsetY: 2,
+          },
+          textStyle: {
+            color: '#333',
+          },
+          borderColor: '#ddd',
+        },
+        {
+          type: 'inside',
+          xAxisIndex: [0],
+          start: 0,
+          end: 100,
+        },
+      ],
       xAxis: {
         data: tableObject.header.slice(1),
         type: 'category',
@@ -200,8 +267,9 @@ export default class EChartsTableEngine {
       grid: {
         containLabel: true,
         left: '1%',
-        right: '1%',
-        bottom: '10%',
+        right: '8%',
+        bottom: '15%',
+        top: '15%',
       },
     };
     return chartOptions;
