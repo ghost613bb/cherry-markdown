@@ -127,15 +127,61 @@ export default class EChartsTableEngine {
       bar: {
         type: 'bar',
         barWidth: 20,
-        animation: false,
+        animation: true,
+        animationDuration: 1000,
         name: '',
         data: [],
+        itemStyle: {
+          borderWidth: 1,
+          borderColor: '#fff',
+          shadowBlur: 0,
+          shadowColor: 'transparent',
+        },
+        emphasis: {
+          focus: 'series',
+          itemStyle: {
+            borderWidth: 2,
+            borderColor: '#fff',
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+            shadowOffsetX: 0,
+            shadowOffsetY: 0,
+            scale: true,
+          },
+        },
       },
       line: {
         type: 'line',
-        animation: false,
+        animation: true,
+        animationDuration: 1000,
         name: '',
         data: [],
+        lineStyle: {
+          width: 2,
+          shadowBlur: 0,
+          shadowColor: 'transparent',
+        },
+        emphasis: {
+          focus: 'series',
+          lineStyle: {
+            width: 4,
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+            shadowOffsetX: 0,
+            shadowOffsetY: 0,
+          },
+          itemStyle: {
+            borderWidth: 3,
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.3)',
+          },
+        },
+        symbol: 'circle',
+        symbolSize: 6,
+        itemStyle: {
+          borderWidth: 2,
+          borderColor: '#fff',
+        },
       },
     };
     if (!baseSeries[type]) {
